@@ -7,7 +7,7 @@
   tasks:
 
     - name: 'Delete all the files'
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: 'absent'
       loop:
