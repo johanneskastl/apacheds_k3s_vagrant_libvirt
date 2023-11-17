@@ -1,0 +1,55 @@
+---
+- name: 'Install ApacheDS'
+  hosts: 'k3s-host'
+  gather_facts: false
+  become: false
+  module_defaults:
+    kubernetes.core.k8s:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.helm:
+      kubeconfig: './k3s-kubeconfig'
+
+  tasks:
+
+    - name: 'Create the apacheds namespace'
+      kubernetes.core.k8s:
+        name: 'apacheds'
+        api_version: 'v1'
+        kind: 'Namespace'
+        state: 'present'
+      delegate_to: 'localhost'
+
+    - name: 'Create the apacheds configuration secret'
+      kubernetes.core.k8s:
+        state: 'present'
+        definition:
+          metadata:
+            name: apacheds-configuration
+            namespace: apacheds
+          kind: Secret
+          api_version: 'v1'
+          stringData:
+            APACHEDS_ROOT_PASSWORD: b1s
+            DN: DC=apacheds,DC=ojkastl,DC=de
+            OBJECT_CLASS: domain
+      delegate_to: 'localhost'
+
+    - name: 'Create the apacheds ldifimport secret'
+      kubernetes.core.k8s:
+        state: 'present'
+        src: ./ApacheDS/secret-apacheds-ldif.yml
+      delegate_to: 'localhost'
+
+    - name: 'Install the apacheds helm chart'
+      kubernetes.core.helm:
+        name: 'apacheds'
+        chart_ref: 'johanneskastl-helm-charts/apacheds'
+        release_namespace: 'apacheds'
+        release_values:
+          persistence:
+            data:
+              size: 1Gi
+            ldifimport:
+              enabled: true
+              name: apacheds-ldif
+      delegate_to: 'localhost'
