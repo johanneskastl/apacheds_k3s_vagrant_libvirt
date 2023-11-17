@@ -43,7 +43,8 @@
     - name: 'Install the apacheds helm chart'
       kubernetes.core.helm:
         name: 'apacheds'
-        chart_ref: 'johanneskastl-helm-charts/apacheds'
+        chart_ref: 'apacheds'
+        chart_repo_url: 'https://johanneskastl.github.io/helm-charts/'
         release_namespace: 'apacheds'
         release_values:
           persistence:
