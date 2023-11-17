@@ -1,0 +1,7 @@
+---
+
+- name: 'Run playbook-install_apparmor_pattern.yml'
+  ansible.builtin.import_playbook: playbook-install_apparmor_pattern.yml
+
+- name: 'Run playbook-install_k3s.yml'
+  ansible.builtin.import_playbook: playbook-install_k3s.yml
