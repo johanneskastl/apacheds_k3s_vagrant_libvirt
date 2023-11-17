@@ -1,0 +1,14 @@
+---
+- name: 'Start from scratch and DELETE EVERYTHING'
+  hosts: 'localhost'
+  gather_facts: false
+  become: false
+
+  tasks:
+
+    - name: 'Delete all the files'
+      file:
+        path: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'k3s-kubeconfig'
