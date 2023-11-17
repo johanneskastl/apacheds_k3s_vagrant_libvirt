@@ -1,0 +1,13 @@
+---
+- name: 'Install the apparmor pattern'
+  hosts: 'k3s-host'
+  gather_facts: true
+  become: true
+
+  tasks:
+
+    - name: 'Install the apparmor pattern'
+      community.general.zypper:
+        name: apparmor
+        type: pattern
+        state: present
